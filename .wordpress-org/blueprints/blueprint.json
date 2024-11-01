@@ -1,0 +1,38 @@
+{
+  "landingPage": "/wp-admin/admin.php?page=upvf-free",
+  "preferredVersions": {
+    "php": "8.0",
+    "wp": "latest"
+  },
+  "phpExtensionBundles": [
+    "kitchen-sink"
+  ],
+  "features": {
+    "networking": true
+  },
+  "steps": [
+    {
+      "step": "runPHP",
+      "code": "<?php require_once 'wordpress/wp-load.php'; global $wp_rewrite; $wp_rewrite->set_permalink_structure('/%postname%/'); $wp_rewrite->flush_rules( true ); flush_rewrite_rules(); ?>"
+    },
+    {
+      "step": "installPlugin",
+      "pluginZipFile": {
+        "resource": "wordpress.org/plugins",
+        "slug": "user-private-files"
+      },
+      "options": {
+        "activate": true
+      }
+    },
+    {
+      "step": "login",
+      "username": "admin",
+      "password": "password"
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php require_once 'wordpress/wp-load.php'; $uploads_dir = wp_get_upload_dir()['basedir']; if (!is_dir($uploads_dir)) { mkdir( $uploads_dir ); } $upf_dir = wp_get_upload_dir()['basedir'] . '/upf-docs/'; mkdir( $upf_dir ); ?>"
+    }
+  ]
+}
